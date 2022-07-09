@@ -33,13 +33,17 @@ class _PromptScreenState extends State<PromptScreen> {
           controller: _scrollController,
           physics: const BouncingScrollPhysics(),
           child: BlocConsumer<BuddyBloc, BuddyState>(
-            listener: (context, state) async {
+            listener: (context, state) {
               if (state.status == BuddyStatus.done) {
-                await _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent * 2,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeOut,
-                );
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+                  await _scrollController.animateTo(
+                    _scrollController.position.maxScrollExtent == 0
+                        ? 0
+                        : _scrollController.position.maxScrollExtent + 25,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
+                });
               }
             },
             builder: (context, state) {
