@@ -10,10 +10,7 @@ part 'buddy_state.dart';
 class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
   final BuddyRepository buddyRepository;
   BuddyBloc({required this.buddyRepository})
-      : super(const BuddyState(prompt: {
-          1: '$sender : Hello, who are you?\n',
-          2: '$recipient : I am an ai created by OpenAI. How can I help you today?\n',
-        }, response: '', input: '', status: BuddyStatus.idle, currentId: 3)) {
+      : super(const BuddyState(prompt: {}, response: '', input: '', status: BuddyStatus.idle, currentId: 1)) {
     on<BuddySendEvent>((event, emit) async {
       emit(state.copyWith(status: BuddyStatus.busy));
       // first create the string to send to the AI
@@ -25,7 +22,7 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       final readableText = buddyRepository.convertResponseToReadableText(response);
 
       // add response to map
-      final newResponse = {...newPrompt, state.currentId + 1: '$recipient: $readableText\n'};
+      final newResponse = {...newPrompt, state.currentId + 1: '$recipient:$readableText\n'};
 
       emit(state.copyWith(
           prompt: newResponse, response: readableText, status: BuddyStatus.done, currentId: newResponse.keys.last + 1));
