@@ -21,7 +21,7 @@ class ChatBubble extends StatelessWidget {
               style: getStyle(fontSize: 14),
             )
           : AnimatedTextKit(
-              animatedTexts: [TyperAnimatedText(text.trim())],
+              animatedTexts: [TyperAnimatedText(text.trim(), textStyle: getStyle(fontSize: 14))],
               isRepeatingAnimation: false,
             ),
     );
