@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:buddy_app/constants/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -14,10 +15,15 @@ class ChatBubble extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 2,
       decoration:
           BoxDecoration(color: _isOdd(id) ? senderColor : recipientColor, borderRadius: BorderRadius.circular(15)),
-      child: Text(
-        text,
-        style: getStyle(fontSize: 14),
-      ),
+      child: _isOdd(id)
+          ? Text(
+              text.trim(),
+              style: getStyle(fontSize: 14),
+            )
+          : AnimatedTextKit(
+              animatedTexts: [TyperAnimatedText(text.trim())],
+              isRepeatingAnimation: false,
+            ),
     );
   }
 

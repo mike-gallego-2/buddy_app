@@ -17,6 +17,7 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       final prompt = '$sender : ${event.input}\n';
       // now add the prompt to the map
       final newPrompt = {...state.prompt, state.currentId: prompt};
+      emit(state.copyWith(prompt: newPrompt));
 
       final response = await buddyRepository.sendMessage(newPrompt);
       final readableText = buddyRepository.convertResponseToReadableText(response);
