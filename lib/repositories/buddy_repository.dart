@@ -14,15 +14,8 @@ class BuddyRepository {
     return await _speech.activate('en_US').then((_) => _speech.listen().then((_) => true)).catchError((_) => false);
   }
 
-  Stream<bool> isListening() {
-    // make a stream controller to listen to the speech recognition
-    final controller = StreamController<bool>();
-    _speech.setRecognitionStartedHandler(() {
-      debugPrint('started');
-      controller.add(true);
-    });
-
-    return controller.stream;
+  void startListening() {
+    _speech.setRecognitionStartedHandler(() {});
   }
 
   Stream<String> handleResult() {

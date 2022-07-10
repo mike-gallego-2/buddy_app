@@ -24,17 +24,14 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       final isAvailable = await buddyRepository.initializeSpeech();
       emit(state.copyWith(isMicAvailable: isAvailable));
       if (isAvailable) {
-        await emit.forEach<bool>(buddyRepository.isListening(), onData: (isListening) {
-          debugPrint(isListening.toString());
-          return state.copyWith(isListening: isListening);
-        });
+        buddyRepository.startListening();
+        emit(state.copyWith(isListening: true, status: BuddyStatus.busy));
       } else {
-        print('could not listen');
+        debugPrint('could not listen');
         emit(state.copyWith(status: BuddyStatus.error));
       }
     });
     on<BuddyStartListeningEvent>((event, emit) async {
-      emit(state.copyWith(status: BuddyStatus.busy));
       if (state.isMicAvailable && state.isListening) {
         await emit.forEach<String>(buddyRepository.handleResult(), onData: (result) {
           final prompt = '$sender: $result\n';
