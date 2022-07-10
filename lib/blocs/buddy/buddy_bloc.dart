@@ -54,7 +54,6 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       });
     });
     on<BuddySendEvent>((event, emit) async {
-      emit(state.copyWith(status: BuddyStatus.busy));
       // first create the string to send to the AI
       final prompt = '$sender: ${event.input}\n';
       // now add the prompt to the map
