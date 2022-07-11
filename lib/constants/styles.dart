@@ -21,3 +21,4 @@ final lightGrey = Colors.grey[600];
 const primary = Color(0xFF032A49);
 final senderColor = Colors.grey[600]!.withOpacity(0.3);
 final recipientColor = Colors.blue[600]!.withOpacity(0.3);
+const lightGreen = Color.fromARGB(255, 109, 217, 113);

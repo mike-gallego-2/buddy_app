@@ -1,5 +1,6 @@
 import 'package:buddy_app/blocs/buddy/buddy_bloc.dart';
 import 'package:buddy_app/constants/styles.dart';
+import 'package:buddy_app/repositories/buddy_repository.dart';
 import 'package:buddy_app/widgets/chat_bubble.dart';
 import 'package:buddy_app/widgets/vertical_space.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,9 @@ class _PromptScreenState extends State<PromptScreen> {
                           Column(
                             children: state.prompt.entries
                                 .map((element) => Align(
-                                    alignment: _isOdd(element.key) ? Alignment.centerRight : Alignment.centerLeft,
+                                    alignment: context.read<BuddyRepository>().isOdd(element.key)
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
                                     child: ChatBubble(text: element.value, id: element.key)))
                                 .toList(),
                           ),
@@ -135,9 +138,5 @@ class _PromptScreenState extends State<PromptScreen> {
         ),
       ),
     );
-  }
-
-  bool _isOdd(int number) {
-    return number % 2 != 0;
   }
 }

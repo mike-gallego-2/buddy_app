@@ -77,4 +77,6 @@ class BuddyRepository {
     await _initializeTts();
     await _tts.speak(text);
   }
+
+  bool isOdd(int number) => number % 2 == 1;
 }
