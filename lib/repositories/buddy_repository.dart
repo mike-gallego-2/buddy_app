@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:buddy_app/services/openai_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_speech/flutter_speech.dart';
 
 class BuddyRepository {
@@ -28,9 +27,9 @@ class BuddyRepository {
 
   Stream<String> handleFeedback() {
     final controller = StreamController<String>();
-    _speech.setRecognitionCompleteHandler((result) {
-      debugPrint('completed');
+    _speech.setRecognitionCompleteHandler((result) async {
       controller.add('handle_completed_intent');
+      await _speech.stop();
     });
     return controller.stream;
   }

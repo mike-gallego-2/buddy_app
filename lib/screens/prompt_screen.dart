@@ -34,8 +34,8 @@ class _PromptScreenState extends State<PromptScreen> {
             if (state.status == BuddyStatus.idle) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
                 await _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent == 0 ? 0 : _scrollController.position.maxScrollExtent + 25,
-                  duration: const Duration(milliseconds: 300),
+                  _scrollController.position.maxScrollExtent == 0 ? 0 : _scrollController.position.maxScrollExtent + 50,
+                  duration: const Duration(milliseconds: 600),
                   curve: Curves.easeOut,
                 );
               });
