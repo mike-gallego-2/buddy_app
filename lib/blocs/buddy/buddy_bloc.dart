@@ -21,11 +21,12 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
           feedback: '',
         )) {
     on<BuddyCheckListenEvent>((event, emit) async {
+      await buddyRepository.initializeTts();
       final isAvailable = await buddyRepository.initializeSpeech();
       emit(state.copyWith(isMicAvailable: isAvailable));
       if (isAvailable) {
-        buddyRepository.startListening();
-        emit(state.copyWith(isListening: true, status: BuddyStatus.busy));
+        final isListening = await buddyRepository.startListening();
+        emit(state.copyWith(isListening: isListening, status: BuddyStatus.busy));
       } else {
         debugPrint('could not listen');
         emit(state.copyWith(status: BuddyStatus.error));
@@ -37,7 +38,10 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
           final prompt = '$sender: $result\n';
           final newPrompt = {...state.prompt, state.currentId: prompt};
 
-          return state.copyWith(input: result, prompt: newPrompt, feedback: 'done listening');
+          return state.copyWith(
+            input: result,
+            prompt: newPrompt,
+          );
         });
       } else {
         emit(state.copyWith(status: BuddyStatus.error));
@@ -62,12 +66,17 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
 
       final response = await buddyRepository.sendMessage(newPrompt);
       final readableText = buddyRepository.convertResponseToReadableText(response);
+      await buddyRepository.speak(readableText);
 
       // add response to map
       final newResponse = {...newPrompt, state.currentId + 1: '$recipient:$readableText\n'};
 
       emit(state.copyWith(
-          prompt: newResponse, response: readableText, status: BuddyStatus.idle, currentId: newResponse.keys.last + 1));
+          prompt: newResponse,
+          response: readableText,
+          status: BuddyStatus.idle,
+          currentId: newResponse.keys.last + 1,
+          feedback: 'speak'));
     });
   }
 }

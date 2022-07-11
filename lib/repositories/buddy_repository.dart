@@ -1,20 +1,26 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:buddy_app/services/openai_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_speech/flutter_speech.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class BuddyRepository {
   late final SpeechRecognition _speech;
+  late final FlutterTts _tts;
 
-  BuddyRepository() : _speech = SpeechRecognition();
+  BuddyRepository()
+      : _speech = SpeechRecognition(),
+        _tts = FlutterTts();
 
   // initialize speech
   Future<bool> initializeSpeech() async {
-    return await _speech.activate('en_US').then((_) => _speech.listen().then((_) => true)).catchError((_) => false);
+    return await _speech.activate('en_US').then((value) => true).catchError((error) => false);
   }
 
-  void startListening() {
-    _speech.setRecognitionStartedHandler(() {});
+  Future<bool> startListening() async {
+    return await _speech.listen().then((value) => true).catchError((error) => false);
   }
 
   Stream<String> handleResult() {
@@ -46,5 +52,26 @@ class BuddyRepository {
     final responseSection = response.split(':');
     final readableText = responseSection.last;
     return readableText;
+  }
+
+  Future<void> initializeTts() async {
+    await _initIosTTs();
+    await _tts.setLanguage('en-US');
+  }
+
+  Future<void> _initIosTTs() async {
+    if (!Platform.isAndroid) return;
+    await _tts.setSharedInstance(true);
+    await _tts.setIosAudioCategory(
+      IosTextToSpeechAudioCategory.playback,
+      [
+        IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+      ],
+    );
+  }
+
+  Future<void> speak(String text) async {
+    final result = await _tts.speak(text);
+    debugPrint(result?.toString() ?? 'error');
   }
 }

@@ -43,14 +43,10 @@ class _PromptScreenState extends State<PromptScreen> {
 
             if (state.isMicAvailable && state.isListening) {
               context.read<BuddyBloc>().add(BuddyStartListeningEvent());
-            }
-
-            if (state.feedback == 'done listening') {
               context.read<BuddyBloc>().add(BuddyCompleteListeningEvent());
             }
 
             if (state.feedback == 'handle_completed_intent') {
-              debugPrint('testing');
               context.read<BuddyBloc>().add(BuddySendEvent(input: state.input));
             }
           },
