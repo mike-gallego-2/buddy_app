@@ -34,8 +34,7 @@ class BuddyRepository {
   Stream<String> handleFeedback() {
     final controller = StreamController<String>();
     _speech.setRecognitionCompleteHandler((result) async {
-      controller.add('handle_completed_intent');
-      await _speech.stop();
+      controller.add(result);
     });
     return controller.stream;
   }
@@ -61,6 +60,9 @@ class BuddyRepository {
     await _tts.setVoice({"name": "Fred", "locale": "en-US"});
     await _initIos();
     await _tts.awaitSpeakCompletion(true);
+    _tts.setCompletionHandler(() {
+      _tts.stop();
+    });
   }
 
   Future<void> _initIos() async {

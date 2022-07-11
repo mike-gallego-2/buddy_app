@@ -13,12 +13,13 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       : super(const BuddyState(
           prompt: {},
           response: '',
+          previousResponse: '',
           input: '',
           status: BuddyStatus.idle,
           currentId: 1,
           isMicAvailable: false,
           isListening: false,
-          feedback: '',
+          readyToSend: false,
         )) {
     on<BuddyInitializeEvent>((event, emit) async {
       await buddyRepository.speak('Hello, I am your buddy');
@@ -39,17 +40,20 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
         await emit.forEach<String>(buddyRepository.handleResult(), onData: (result) {
           final prompt = '$sender: $result\n';
           final newPrompt = {...state.prompt, state.currentId: prompt};
-
-          return state.copyWith(input: result, prompt: newPrompt);
+          return state.copyWith(prompt: newPrompt);
         });
       } else {
         emit(state.copyWith(status: BuddyStatus.error));
       }
     });
     on<BuddyCompleteListeningEvent>((event, emit) async {
-      await emit.forEach<String>(buddyRepository.handleFeedback(), onData: (feedback) {
+      await emit.forEach<String>(buddyRepository.handleFeedback(), onData: (result) {
+        final prompt = '$sender: $result\n';
+        final newPrompt = {...state.prompt, state.currentId: prompt};
         return state.copyWith(
-          feedback: feedback,
+          readyToSend: true,
+          input: result,
+          prompt: newPrompt,
           isListening: false,
           isMicAvailable: false,
           status: BuddyStatus.idle,
@@ -74,13 +78,13 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
         response: readableText,
         status: BuddyStatus.idle,
         currentId: newResponse.keys.last + 1,
-        feedback: 'speak',
+        readyToSend: false,
       ));
     });
 
     on<BuddySpeakEvent>((event, emit) async {
       await buddyRepository.speak(event.text);
-      emit(state.copyWith(feedback: ''));
+      emit(state.copyWith(previousResponse: event.text));
     });
   }
 }

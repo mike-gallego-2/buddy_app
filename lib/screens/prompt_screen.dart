@@ -47,11 +47,11 @@ class _PromptScreenState extends State<PromptScreen> {
               context.read<BuddyBloc>().add(BuddyCompleteListeningEvent());
             }
 
-            if (state.feedback == 'handle_completed_intent') {
+            if (state.readyToSend) {
               context.read<BuddyBloc>().add(BuddySendEvent(input: state.input));
             }
 
-            if (state.feedback == 'speak') {
+            if (state.previousResponse != state.response) {
               context.read<BuddyBloc>().add(BuddySpeakEvent(text: state.response));
             }
           },
