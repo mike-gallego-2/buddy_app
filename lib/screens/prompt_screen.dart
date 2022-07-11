@@ -60,14 +60,28 @@ class _PromptScreenState extends State<PromptScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const VerticalSpace(),
-                      Text(
-                        'Hello,\nI am your buddy',
-                        style: getStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const VerticalSpace(height: 8),
-                      Text(
-                        'What can I help you with?',
-                        style: getStyle(color: lightGrey),
+                      SizedBox(
+                        height: 150,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Hello,\nI am your buddy',
+                                    style: getStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                  ),
+                                  const VerticalSpace(height: 8),
+                                  Text(
+                                    'What can I help you with?',
+                                    style: getStyle(color: lightGrey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Image.asset('assets/avatar.png')
+                          ],
+                        ),
                       ),
                       const VerticalSpace(),
                       Column(

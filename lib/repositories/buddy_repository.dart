@@ -63,7 +63,7 @@ class BuddyRepository {
     if (!Platform.isAndroid) return;
     await _tts.setSharedInstance(true);
     await _tts.setIosAudioCategory(
-      IosTextToSpeechAudioCategory.playback,
+      IosTextToSpeechAudioCategory.playAndRecord,
       [
         IosTextToSpeechAudioCategoryOptions.mixWithOthers,
       ],
