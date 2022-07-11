@@ -17,8 +17,12 @@ class MyApp extends StatelessWidget {
     return RepositoryProvider(
       create: (context) => BuddyRepository(),
       child: BlocProvider(
-        create: (context) => BuddyBloc(buddyRepository: context.read<BuddyRepository>()),
-        child: const MaterialApp(title: 'Buddy Demo', home: PromptScreen()),
+        create: (context) => BuddyBloc(buddyRepository: context.read<BuddyRepository>())..add(BuddyInitializeEvent()),
+        child: const MaterialApp(
+          title: 'Buddy Demo',
+          home: PromptScreen(),
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
   }

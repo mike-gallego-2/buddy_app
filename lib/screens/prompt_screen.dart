@@ -1,5 +1,6 @@
 import 'package:buddy_app/blocs/buddy/buddy_bloc.dart';
 import 'package:buddy_app/constants/styles.dart';
+import 'package:buddy_app/repositories/buddy_repository.dart';
 import 'package:buddy_app/widgets/chat_bubble.dart';
 import 'package:buddy_app/widgets/vertical_space.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _PromptScreenState extends State<PromptScreen> {
         width: double.infinity,
         padding: standardPadding,
         child: BlocConsumer<BuddyBloc, BuddyState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.status == BuddyStatus.idle) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
                 await _scrollController.animateTo(
@@ -43,15 +44,15 @@ class _PromptScreenState extends State<PromptScreen> {
 
             if (state.isMicAvailable && state.isListening) {
               context.read<BuddyBloc>().add(BuddyStartListeningEvent());
-            }
-
-            if (state.feedback == 'done listening') {
               context.read<BuddyBloc>().add(BuddyCompleteListeningEvent());
             }
 
             if (state.feedback == 'handle_completed_intent') {
-              debugPrint('testing');
               context.read<BuddyBloc>().add(BuddySendEvent(input: state.input));
+            }
+
+            if (state.feedback == 'speak') {
+              await context.read<BuddyRepository>().speak(state.response);
             }
           },
           builder: (context, state) {
@@ -64,14 +65,28 @@ class _PromptScreenState extends State<PromptScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const VerticalSpace(),
-                      Text(
-                        'Hello,\nI am your buddy',
-                        style: getStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const VerticalSpace(height: 8),
-                      Text(
-                        'What can I help you with?',
-                        style: getStyle(color: lightGrey),
+                      SizedBox(
+                        height: 150,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Hello,\nI am your buddy',
+                                    style: getStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                  ),
+                                  const VerticalSpace(height: 8),
+                                  Text(
+                                    'What can I help you with?',
+                                    style: getStyle(color: lightGrey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Image.asset('assets/buddy_avatar.png')
+                          ],
+                        ),
                       ),
                       const VerticalSpace(),
                       Column(
