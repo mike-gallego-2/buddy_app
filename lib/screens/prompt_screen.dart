@@ -34,7 +34,7 @@ class _PromptScreenState extends State<PromptScreen> {
             if (state.status == BuddyStatus.idle) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
                 await _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent == 0 ? 0 : _scrollController.position.maxScrollExtent + 50,
+                  _scrollController.position.maxScrollExtent == 0 ? 0 : _scrollController.position.maxScrollExtent + 5,
                   duration: const Duration(milliseconds: 600),
                   curve: Curves.easeOut,
                 );
@@ -55,58 +55,64 @@ class _PromptScreenState extends State<PromptScreen> {
             }
           },
           builder: (context, state) {
-            return CustomScrollView(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const VerticalSpace(),
-                      SizedBox(
-                        height: 150,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Hello,\nI am your buddy',
-                                    style: getStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            return Stack(
+              children: [
+                CustomScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const VerticalSpace(),
+                          SizedBox(
+                            height: 150,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Hello,\nI am your buddy',
+                                        style: getStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                      ),
+                                      const VerticalSpace(height: 8),
+                                      Text(
+                                        'What can I help you with?',
+                                        style: getStyle(color: lightGrey),
+                                      ),
+                                    ],
                                   ),
-                                  const VerticalSpace(height: 8),
-                                  Text(
-                                    'What can I help you with?',
-                                    style: getStyle(color: lightGrey),
-                                  ),
-                                ],
-                              ),
+                                ),
+                                Image.asset('assets/buddy_avatar.png')
+                              ],
                             ),
-                            Image.asset('assets/buddy_avatar.png')
-                          ],
-                        ),
+                          ),
+                          const VerticalSpace(),
+                          Column(
+                            children: state.prompt.entries
+                                .map((element) => Align(
+                                    alignment: _isOdd(element.key) ? Alignment.centerRight : Alignment.centerLeft,
+                                    child: ChatBubble(text: element.value, id: element.key)))
+                                .toList(),
+                          ),
+                          state.prompt.length < 4
+                              ? const VerticalSpace(
+                                  height: 200,
+                                )
+                              : const VerticalSpace(
+                                  height: 0,
+                                ),
+                          const SizedBox(
+                            height: 150,
+                          )
+                        ],
                       ),
-                      const VerticalSpace(),
-                      Column(
-                        children: state.prompt.entries
-                            .map((element) => Align(
-                                alignment: _isOdd(element.key) ? Alignment.centerRight : Alignment.centerLeft,
-                                child: ChatBubble(text: element.value, id: element.key)))
-                            .toList(),
-                      ),
-                      state.prompt.length < 4
-                          ? const VerticalSpace(
-                              height: 200,
-                            )
-                          : const VerticalSpace(
-                              height: 0,
-                            )
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
+                SizedBox.expand(
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: state.status != BuddyStatus.busy
@@ -122,7 +128,7 @@ class _PromptScreenState extends State<PromptScreen> {
                           )
                         : Lottie.asset('assets/mic_animation.json', height: 100, width: 100),
                   ),
-                ),
+                )
               ],
             );
           },

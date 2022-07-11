@@ -15,8 +15,7 @@ class ChatBubble extends StatelessWidget {
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * 0.7,
       ),
-      decoration:
-          BoxDecoration(color: _isOdd(id) ? senderColor : recipientColor, borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(color: _isOdd(id) ? senderColor : recipientColor, borderRadius: standardRadius),
       child: _isOdd(id)
           ? Text(
               text.trim(),

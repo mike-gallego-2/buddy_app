@@ -64,7 +64,7 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       emit(state.copyWith(prompt: newPrompt));
 
       final response = await buddyRepository.sendMessage(newPrompt);
-      final readableText = buddyRepository.convertResponseToReadableText(response);
+      final readableText = buddyRepository.convertResponseToReadableText(response).replaceAll('\n', ' ');
 
       // add response to map
       final newResponse = {...newPrompt, state.currentId + 1: '$recipient:$readableText\n'};

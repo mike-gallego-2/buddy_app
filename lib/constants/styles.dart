@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 // layout
 const standardPadding = EdgeInsets.all(16);
 const smallPadding = EdgeInsets.all(8);
+final standardRadius = BorderRadius.circular(8);
 
 // textstyles
 TextStyle getStyle({double? fontSize, Color? color, FontWeight? fontWeight}) {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:buddy_app/services/openai_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_speech/flutter_speech.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -54,7 +55,10 @@ class BuddyRepository {
   }
 
   Future<void> _initializeTts() async {
-    await _tts.setVoice({"name": "Karen", "locale": "en-US"});
+    if (kDebugMode) {
+      await _tts.getVoices.then((value) => debugPrint(value.toString()));
+    }
+    await _tts.setVoice({"name": "Fred", "locale": "en-US"});
     await _initIos();
     await _tts.awaitSpeakCompletion(true);
   }
