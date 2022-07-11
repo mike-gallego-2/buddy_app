@@ -12,7 +12,9 @@ class ChatBubble extends StatelessWidget {
     return Container(
       padding: smallPadding,
       margin: standardPadding,
-      width: MediaQuery.of(context).size.width / 2, //TODO: set max width
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * 0.7,
+      ),
       decoration:
           BoxDecoration(color: _isOdd(id) ? senderColor : recipientColor, borderRadius: BorderRadius.circular(15)),
       child: _isOdd(id)
