@@ -15,3 +15,8 @@ class BuddyCheckListenEvent extends BuddyEvent {}
 class BuddyStartListeningEvent extends BuddyEvent {}
 
 class BuddyCompleteListeningEvent extends BuddyEvent {}
+
+class BuddySpeakEvent extends BuddyEvent {
+  final String text;
+  BuddySpeakEvent({required this.text});
+}

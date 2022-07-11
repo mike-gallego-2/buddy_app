@@ -1,6 +1,5 @@
 import 'package:buddy_app/blocs/buddy/buddy_bloc.dart';
 import 'package:buddy_app/constants/styles.dart';
-import 'package:buddy_app/repositories/buddy_repository.dart';
 import 'package:buddy_app/widgets/chat_bubble.dart';
 import 'package:buddy_app/widgets/vertical_space.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class _PromptScreenState extends State<PromptScreen> {
             }
 
             if (state.feedback == 'speak') {
-              await context.read<BuddyRepository>().speak(state.response);
+              context.read<BuddyBloc>().add(BuddySpeakEvent(text: state.response));
             }
           },
           builder: (context, state) {

@@ -77,5 +77,10 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
         feedback: 'speak',
       ));
     });
+
+    on<BuddySpeakEvent>((event, emit) async {
+      await buddyRepository.speak(event.text);
+      emit(state.copyWith(feedback: ''));
+    });
   }
 }
