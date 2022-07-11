@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:buddy_app/services/openai_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_speech/flutter_speech.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -54,24 +53,24 @@ class BuddyRepository {
     return readableText;
   }
 
-  Future<void> initializeTts() async {
-    await _initIosTTs();
-    await _tts.setLanguage('en-US');
+  Future<void> _initializeTts() async {
+    await _tts.setVoice({"name": "Karen", "locale": "en-US"});
+    await _initIos();
+    await _tts.awaitSpeakCompletion(true);
   }
 
-  Future<void> _initIosTTs() async {
-    if (!Platform.isAndroid) return;
+  Future<void> _initIos() async {
+    if (!Platform.isIOS) return;
     await _tts.setSharedInstance(true);
     await _tts.setIosAudioCategory(
-      IosTextToSpeechAudioCategory.playAndRecord,
-      [
-        IosTextToSpeechAudioCategoryOptions.mixWithOthers,
-      ],
+      IosTextToSpeechAudioCategory.playback,
+      [IosTextToSpeechAudioCategoryOptions.mixWithOthers],
+      //IosTextToSpeechAudioMode.voicePrompt,
     );
   }
 
   Future<void> speak(String text) async {
-    final result = await _tts.speak(text);
-    debugPrint(result?.toString() ?? 'error');
+    await _initializeTts();
+    await _tts.speak(text);
   }
 }

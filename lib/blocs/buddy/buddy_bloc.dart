@@ -20,8 +20,10 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
           isListening: false,
           feedback: '',
         )) {
+    on<BuddyInitializeEvent>((event, emit) async {
+      await buddyRepository.speak('Hello, I am your buddy');
+    });
     on<BuddyCheckListenEvent>((event, emit) async {
-      await buddyRepository.initializeTts();
       final isAvailable = await buddyRepository.initializeSpeech();
       emit(state.copyWith(isMicAvailable: isAvailable));
       if (isAvailable) {
@@ -38,10 +40,7 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
           final prompt = '$sender: $result\n';
           final newPrompt = {...state.prompt, state.currentId: prompt};
 
-          return state.copyWith(
-            input: result,
-            prompt: newPrompt,
-          );
+          return state.copyWith(input: result, prompt: newPrompt);
         });
       } else {
         emit(state.copyWith(status: BuddyStatus.error));
@@ -72,11 +71,12 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       final newResponse = {...newPrompt, state.currentId + 1: '$recipient:$readableText\n'};
 
       emit(state.copyWith(
-          prompt: newResponse,
-          response: readableText,
-          status: BuddyStatus.idle,
-          currentId: newResponse.keys.last + 1,
-          feedback: 'speak'));
+        prompt: newResponse,
+        response: readableText,
+        status: BuddyStatus.idle,
+        currentId: newResponse.keys.last + 1,
+        feedback: 'speak',
+      ));
     });
   }
 }

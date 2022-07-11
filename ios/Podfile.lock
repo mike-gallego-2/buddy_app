@@ -6,15 +6,12 @@ PODS:
     - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
-  - text_to_speech (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_speech (from `.symlinks/plugins/flutter_speech/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
-  - text_to_speech (from `.symlinks/plugins/text_to_speech/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
@@ -25,16 +22,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_tts/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
-  text_to_speech:
-    :path: ".symlinks/plugins/text_to_speech/ios"
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_speech: d3db868ad1b390b5f6ac7308ec09b6b608545c03
   flutter_tts: 0f492aab6accf87059b72354fcb4ba934304771d
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
-  text_to_speech: 8669facdbd5b72d2939b810493defd991634f6f9
 
-PODFILE CHECKSUM: 074b25062bc20d6f9966aa508ada7190629a76be
+PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
 
 COCOAPODS: 1.11.3

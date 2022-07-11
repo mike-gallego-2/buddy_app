@@ -1,5 +1,6 @@
 import 'package:buddy_app/blocs/buddy/buddy_bloc.dart';
 import 'package:buddy_app/constants/styles.dart';
+import 'package:buddy_app/repositories/buddy_repository.dart';
 import 'package:buddy_app/widgets/chat_bubble.dart';
 import 'package:buddy_app/widgets/vertical_space.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _PromptScreenState extends State<PromptScreen> {
         width: double.infinity,
         padding: standardPadding,
         child: BlocConsumer<BuddyBloc, BuddyState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.status == BuddyStatus.idle) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
                 await _scrollController.animateTo(
@@ -48,6 +49,10 @@ class _PromptScreenState extends State<PromptScreen> {
 
             if (state.feedback == 'handle_completed_intent') {
               context.read<BuddyBloc>().add(BuddySendEvent(input: state.input));
+            }
+
+            if (state.feedback == 'speak') {
+              await context.read<BuddyRepository>().speak(state.response);
             }
           },
           builder: (context, state) {
@@ -79,7 +84,7 @@ class _PromptScreenState extends State<PromptScreen> {
                                 ],
                               ),
                             ),
-                            Image.asset('assets/avatar.png')
+                            Image.asset('assets/buddy_avatar.png')
                           ],
                         ),
                       ),
