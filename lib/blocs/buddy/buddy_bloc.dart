@@ -19,6 +19,7 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
           isMicAvailable: false,
           isListening: false,
           feedback: '',
+          mode: BuddyMode.idle,
         )) {
     on<BuddyInitializeEvent>((event, emit) async {
       await buddyRepository.speak('Hello, I am your buddy');
@@ -29,6 +30,14 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       if (isAvailable) {
         final isListening = await buddyRepository.startListening();
         emit(state.copyWith(isListening: isListening, status: BuddyStatus.busy));
+
+        await emit.forEach<String>(buddyRepository.handleFeedback(), onData: (feedback) {
+          return state.copyWith(
+            mode: BuddyMode.speak,
+            input: feedback,
+            status: BuddyStatus.idle,
+          );
+        });
       } else {
         debugPrint('could not listen');
         emit(state.copyWith(status: BuddyStatus.error));
@@ -40,32 +49,21 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
           final prompt = '$sender: $result\n';
           final newPrompt = {...state.prompt, state.currentId: prompt};
 
-          return state.copyWith(input: result, prompt: newPrompt);
+          return state.copyWith(input: result, prompt: newPrompt, isListening: false, isMicAvailable: false);
         });
       } else {
         emit(state.copyWith(status: BuddyStatus.error));
       }
     });
-    on<BuddyCompleteListeningEvent>((event, emit) async {
-      await emit.forEach<String>(buddyRepository.handleFeedback(), onData: (feedback) {
-        return state.copyWith(
-          feedback: feedback,
-          isListening: false,
-          isMicAvailable: false,
-          status: BuddyStatus.idle,
-        );
-      });
-    });
     on<BuddySendEvent>((event, emit) async {
       // first create the string to send to the AI
-      final prompt = '$sender: ${event.input}\n';
+      final prompt = '$sender: ${state.input}\n';
       // now add the prompt to the map
       final newPrompt = {...state.prompt, state.currentId: prompt};
       emit(state.copyWith(prompt: newPrompt));
 
       final response = await buddyRepository.sendMessage(newPrompt);
       final readableText = buddyRepository.convertResponseToReadableText(response);
-      await buddyRepository.speak(readableText);
 
       // add response to map
       final newResponse = {...newPrompt, state.currentId + 1: '$recipient:$readableText\n'};
@@ -73,10 +71,10 @@ class BuddyBloc extends Bloc<BuddyEvent, BuddyState> {
       emit(state.copyWith(
         prompt: newResponse,
         response: readableText,
-        status: BuddyStatus.idle,
         currentId: newResponse.keys.last + 1,
-        feedback: 'speak',
+        mode: BuddyMode.idle,
       ));
+      await buddyRepository.speak(readableText);
     });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:buddy_app/blocs/bloc_observer.dart';
 import 'package:buddy_app/blocs/buddy/buddy_bloc.dart';
 import 'package:buddy_app/repositories/buddy_repository.dart';
 import 'package:buddy_app/screens/prompt_screen.dart';
@@ -5,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
+  BlocOverrides.runZoned(() {
+    runApp(const MyApp());
+  }, blocObserver: BuddyBlocObserver());
   runApp(const MyApp());
 }
 

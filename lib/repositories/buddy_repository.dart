@@ -32,9 +32,12 @@ class BuddyRepository {
 
   Stream<String> handleFeedback() {
     final controller = StreamController<String>();
+    List<String> completions = [];
     _speech.setRecognitionCompleteHandler((result) async {
-      controller.add('handle_completed_intent');
-      await _speech.stop();
+      completions.add(result);
+      if (completions.length == 2) {
+        controller.add(result);
+      }
     });
     return controller.stream;
   }

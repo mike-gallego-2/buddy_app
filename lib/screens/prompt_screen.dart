@@ -1,6 +1,5 @@
 import 'package:buddy_app/blocs/buddy/buddy_bloc.dart';
 import 'package:buddy_app/constants/styles.dart';
-import 'package:buddy_app/repositories/buddy_repository.dart';
 import 'package:buddy_app/widgets/chat_bubble.dart';
 import 'package:buddy_app/widgets/vertical_space.dart';
 import 'package:flutter/material.dart';
@@ -44,15 +43,10 @@ class _PromptScreenState extends State<PromptScreen> {
 
             if (state.isMicAvailable && state.isListening) {
               context.read<BuddyBloc>().add(BuddyStartListeningEvent());
-              context.read<BuddyBloc>().add(BuddyCompleteListeningEvent());
             }
 
-            if (state.feedback == 'handle_completed_intent') {
-              context.read<BuddyBloc>().add(BuddySendEvent(input: state.input));
-            }
-
-            if (state.feedback == 'speak') {
-              await context.read<BuddyRepository>().speak(state.response);
+            if (state.mode == BuddyMode.speak) {
+              context.read<BuddyBloc>().add(BuddySendEvent());
             }
           },
           builder: (context, state) {

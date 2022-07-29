@@ -5,10 +5,7 @@ abstract class BuddyEvent {}
 
 class BuddyInitializeEvent extends BuddyEvent {}
 
-class BuddySendEvent extends BuddyEvent {
-  final String input;
-  BuddySendEvent({required this.input});
-}
+class BuddySendEvent extends BuddyEvent {}
 
 class BuddyCheckListenEvent extends BuddyEvent {}
 
